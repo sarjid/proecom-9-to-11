@@ -20,6 +20,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'status',
+        'is_super_admin'
     ];
 
     /**
@@ -43,5 +45,53 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+
+    /**
+     * Get the role that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+
+
+    /**
+     * Scope a query to only include
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
+
+
+    /**
+     * Scope a query to only include
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSuperAdmin($query)
+    {
+        return $query->where('is_super_admin', 1);
+    }
+
+    /**
+     * Scope a query to only include
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsnotSuperAdmin($query)
+    {
+        return $query->where('is_super_admin', 0);
     }
 }
